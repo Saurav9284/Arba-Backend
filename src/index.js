@@ -1,6 +1,10 @@
 const express = require('express')
 const {connection , PORT} = require('./Config/db')
+
 const UserController = require('./Controllers/user.controller')
+const ProductController = require('./Controllers/product.controller')
+const CategoryController = require('./Controllers/category.controller')
+
 const app = express();
 
 app.use(express.json())
@@ -10,6 +14,8 @@ app.get('/', (req,res) => {
 })
 
 app.use('/user', UserController)
+app.use('/api',ProductController)
+app.use('/url',CategoryController)
 
 app.listen(PORT, async () => {
     try {

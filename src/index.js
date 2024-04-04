@@ -1,6 +1,6 @@
 const express = require('express')
 const {connection , PORT} = require('./Config/db')
-
+const UserController = require('./Controllers/user.controller')
 const app = express();
 
 app.use(express.json())
@@ -8,6 +8,8 @@ app.use(express.json())
 app.get('/', (req,res) => {
     res.send({msg:'API Running!'})
 })
+
+app.use('/user', UserController)
 
 app.listen(PORT, async () => {
     try {

@@ -29,12 +29,11 @@ CategoryController.get('/category', authorization, async (req, res) => {
 
 // Create Category
 
-CategoryController.post('/category', upload.single("image"), authorization, async (req, res) => {
+CategoryController.post('/category', authorization, async (req, res) => {
   const user = req.userId;
   try {
-    const { name, slug } = req.body;
-    const result = await cloudinary.uploader.upload(req.file.path);
-    const category = await CategoryModel.create({ name, slug, image: result.secure_url, owner: user });
+    const { name, slug ,image} = req.body;
+    const category = await CategoryModel.create({ name, slug, image, owner: user });
     res.status(201).json({ msg: 'Category created', success: true, category });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -46,12 +45,9 @@ CategoryController.post('/category', upload.single("image"), authorization, asyn
 CategoryController.patch('/category/update/:id', authorization, async (req, res) => {
   try {
     const categoryId = req.params.id;
-    const { image } = req.body;
-    const updateFields = {};
-    if (image) {
-      const result = await cloudinary.uploader.upload(image);
-      updateFields.image = result.secure_url;
-    }
+    const { name, slug ,image} = req.body;
+    const updateFields = { name, slug ,image};
+
     const category = await CategoryModel.findByIdAndUpdate(
       categoryId,
       updateFields,

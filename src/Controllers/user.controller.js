@@ -48,7 +48,7 @@ UserController.post("/register", validateRegistration, async (req, res) => {
           userName: userName,
           email: email,
           password: hash,
-          avatar: null, // No avatar uploaded
+          avatar: "https://res.cloudinary.com/dezupfsqo/image/upload/v1712294594/zhzzgzdgq41bev2ivaka.jpg",
         });
         console.log(user);
         res.status(201).json({ msg: "Signup successful" });

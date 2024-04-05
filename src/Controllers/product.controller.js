@@ -1,13 +1,10 @@
 const express = require('express');
 const ProductModel = require('../Models/product.model');
 const authorization = require("../Middlewares/authorization");
-const { upload } = require("../Utils/multer");
-const cloudinary = require("../Utils/cloudinary");
 const ProductController = express.Router();
 
 // Get All Products
-
-ProductController.get('/product',authorization, async (req, res) => {
+ProductController.get('/product', authorization, async (req, res) => {
   try {
     let query = ProductModel.find();
 
@@ -28,22 +25,18 @@ ProductController.get('/product',authorization, async (req, res) => {
   }
 });
 
-
 // Create Product
-
-ProductController.post("/product", upload.single("image"), authorization, async (req, res) => {
+ProductController.post("/product", authorization, async (req, res) => {
   try {
     const user = req.userId;
-    const { title, description, price, category } = req.body;
-    
-    const result = await cloudinary.uploader.upload(req.file.path);
+    const { title, description, price,  image,  category } = req.body;
 
     const product = await ProductModel.create({
       title,
       description,
       price,
+      image,
       category,
-      image: result.secure_url, 
       owner: user
     });
 
@@ -54,18 +47,13 @@ ProductController.post("/product", upload.single("image"), authorization, async 
 });
 
 // Update Product
-
 ProductController.patch('/product/update/:id', authorization, async (req, res) => {
   try {
-    const { title, description, price, category, image } = req.body;
+    const { title, description, price, image, category } = req.body;
     const productId = req.params.id;
     
-    const updateFields = { title, description, price, category };
-    if (image) {
-      const result = await cloudinary.uploader.upload(image);
-      updateFields.image = result.secure_url;
-    }
-    
+    const updateFields = { title, description, price, image ,category  };
+
     const product = await ProductModel.findByIdAndUpdate(
       productId,
       updateFields,
@@ -82,7 +70,6 @@ ProductController.patch('/product/update/:id', authorization, async (req, res) =
 });
 
 // Read Single Product
-
 ProductController.get('/product/:id', authorization, async (req, res) => {
   try {
     const productId = req.params.id;
@@ -97,7 +84,6 @@ ProductController.get('/product/:id', authorization, async (req, res) => {
 });
 
 // Delete Product
-
 ProductController.delete('/product/delete/:id', authorization, async (req, res) => {
   try {
     const productId = req.params.id;

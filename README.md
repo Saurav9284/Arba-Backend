@@ -2,7 +2,7 @@
 
 ## API Endpoints🌍 :-
 
-🌐 <a href='https://notepad-backend-production.up.railway.app/'>URL</a>
+🌐 <a href='https://arba-backend.vercel.app/'>URL</a>
 
 ✅ Server check ==> app/
 

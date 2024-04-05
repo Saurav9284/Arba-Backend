@@ -1,5 +1,6 @@
 const express = require('express')
 const {connection , PORT} = require('./Config/db')
+const cors = require('cors')
 
 const UserController = require('./Controllers/user.controller')
 const ProductController = require('./Controllers/product.controller')
@@ -8,6 +9,7 @@ const CategoryController = require('./Controllers/category.controller')
 const app = express();
 
 app.use(express.json())
+app.use(cors())
 
 app.get('/', (req,res) => {
     res.send({msg:'API Running!'})

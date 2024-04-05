@@ -4,7 +4,7 @@ const authorization = require("../Middlewares/authorization");
 const ProductController = express.Router();
 
 // Get All Products
-ProductController.get('/product', authorization, async (req, res) => {
+ProductController.get('/product', async (req, res) => {
   try {
     let query = ProductModel.find();
 

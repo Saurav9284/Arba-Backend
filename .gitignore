@@ -22,8 +22,5 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Ignore tmp folder
-src/tmp/
-
 # Ignore .env file in src folder
 src/.env

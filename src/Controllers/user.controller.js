@@ -22,15 +22,7 @@ const upload = multer(({storage})).single('avatar');
 
 UserController.post('/register', async (req, res) => {
 
-  const { fullName, userName, email, password } = req.body;
-
-  
   try {
-    const exist = await UserModel.findOne({ email })
-
-    if(exist){
-      return res.send({msg:'User Already exists'})
-    }
     upload(req, res, async function (err) {
 
       if (err instanceof multer.MulterError) {
@@ -42,6 +34,7 @@ UserController.post('/register', async (req, res) => {
         return res.status(500).json({ msg: 'Unexpected error' });
       }
     
+      const { fullName, userName, email, password } = req.body;
       
 
       let avatarUrl = 'https://toppng.com/uploads/preview/icons-logos-emojis-user-icon-png-transparent-11563566676e32kbvynug.png'; 

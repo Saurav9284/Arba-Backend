@@ -5,6 +5,7 @@ const cors = require('cors')
 const UserController = require('./Controllers/user.controller')
 const ProductController = require('./Controllers/product.controller')
 const CategoryController = require('./Controllers/category.controller')
+const CartContoller = require('./Controllers/cart.controller')
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.get('/', (req,res) => {
 app.use('/user', UserController)
 app.use('/api',ProductController)
 app.use('/url',CategoryController)
+app.use('/uri',CartContoller)
 
 app.listen(PORT, async () => {
     try {

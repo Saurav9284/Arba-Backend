@@ -14,7 +14,6 @@ const authorization = (req, res, next) => {
             
             return res.send({ msg: 'Please login first!' });
         }
-
         // Attach the user ID to the request object for further use in the route
         req.userId = decoded.userId;
 

@@ -1,100 +1,91 @@
-const express = require('express');
 const ProductModel = require('../Models/product.model');
-const authorization = require("../Middlewares/authorization");
-const ProductController = express.Router();
+const express = require('express')
 
-// Get All Products
-ProductController.get('/product', async (req, res) => {
+const ProductController = express.Router()
+
+// Get all Products
+ProductController.get('/product',async (req, res) => {
   try {
-    let query = ProductModel.find();
+    let query = {};
 
-    // Sort by price 
-    if (req.query.sort === 'price') {
-      query = query.sort({ price: 1 }); // Ascending order
-    }
-
-    // Filter by category 
     if (req.query.category) {
-      query = query.where({ category: req.query.category });
+      query.category = req.query.category;
     }
 
-    const products = await query.exec();
-    res.status(200).json({ success: true, products });
+    let sort = {};
+
+    if (req.query.sort === 'price') {
+      sort.price = 1;
+    }
+
+    if (req.userId) {
+      query.owner = req.userId;
+    } else {
+      return res.status(401).json({ msg: 'Unauthorized' });
+    }
+    const products = await ProductModel.find(query).sort(sort);
+    res.status(200).json(products);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error(error.message);
+    res.status(500).send(error.message);
   }
 });
 
+
 // Create Product
-ProductController.post("/product", authorization, async (req, res) => {
+
+ProductController.post('/product',async (req, res) => {
   try {
-    const user = req.userId;
-    const { title, description, price,  image,  category } = req.body;
-
-    const product = await ProductModel.create({
-      title,
-      description,
-      price,
-      image,
-      category,
-      owner: user
-    });
-
-    res.status(201).json({ msg: 'Created', success: true, product });
+    const {title, description, price, category, image} = req.body;
+    const {userId} = req;
+    const product = await ProductModel.create({title, description, price, category, image, owner:userId});
+    res.status(200).json(product);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error(error.message);
+    res.status(500).send(error);
   }
 });
 
 // Update Product
-ProductController.patch('/product/update/:id', authorization, async (req, res) => {
+
+ProductController.patch('/product/update/:id',async (req, res) => {
   try {
-    const { title, description, price, image, category } = req.body;
-    const productId = req.params.id;
-    
-    const updateFields = { title, description, price, image ,category  };
-
-    const product = await ProductModel.findByIdAndUpdate(
-      productId,
-      updateFields,
-      { new: true }
-    );
-
-    if (!product) {
-      return res.status(404).json({ success: false, message: 'Product not found' });
-    }
-    res.status(200).json({ msg: 'Product Updated', success: true, product });
+    const { id } = req.params;
+    const updatedProduct = await ProductModel.findByIdAndUpdate(id, req.body, { new: true });
+    res.status(200).json(updatedProduct);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error(error.message);
+    res.status(500).send(error.messsage);
   }
 });
 
-// Read Single Product
-ProductController.get('/product/:id', authorization, async (req, res) => {
+
+// Get Single Product
+
+ProductController.get('/product/:id',async (req, res) => {
   try {
-    const productId = req.params.id;
-    const product = await ProductModel.findById(productId);
+    const { id } = req.params;
+    const product = await ProductModel.findById(id);
     if (!product) {
-      return res.status(404).json({ success: false, message: 'Product not found' });
+      return res.status(404).json({ msg: 'Product not found' });
     }
-    res.status(200).json({ msg: 'Product get', success: true, product });
+    res.status(200).json(product);
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error(error.message);
+    res.status(500).send(error.messsage);
   }
 });
 
 // Delete Product
-ProductController.delete('/product/delete/:id', authorization, async (req, res) => {
+ProductController.delete('/product/delete/:id',async (req, res) => {
   try {
-    const productId = req.params.id;
-    const product = await ProductModel.findByIdAndDelete(productId);
-    if (!product) {
-      return res.status(404).json({ success: false, message: 'Product not found' });
-    }
-    res.status(200).json({msg: 'Product deleted', success: true, message: 'Product deleted successfully' });
+    const { id } = req.params;
+    await ProductModel.findByIdAndDelete(id);
+    res.status(200).json({ msg: 'Product deleted successfully' });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    console.error(error.message);
+    res.status(500).send(error.messsage);
   }
 });
 
-module.exports = ProductController;
+module.exports = ProductController

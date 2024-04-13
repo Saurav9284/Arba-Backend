@@ -6,25 +6,25 @@ const ProductController = express.Router()
 // Get all Products
 ProductController.get('/product', authorization, async (req, res) => {
   try {
-    const userId = req.userId;
+    // const userId = req.userId;
     
-    if (!userId) {
-      return res.status(401).json({ msg: 'Unauthorized' });
-    }
+    // if (!userId) {
+    //   return res.status(401).json({ msg: 'Unauthorized' });
+    // }
     
-    const query = { owner: userId };
+    // const query = { owner: userId };
 
-    if (req.query.category) {
-      query.category = req.query.category;
-    }
+    // if (req.query.category) {
+    //   query.category = req.query.category;
+    // }
 
-    const sort = {};
+    // const sort = {};
 
-    if (req.query.sort === 'price') {
-      sort.price = 1;
-    }
+    // if (req.query.sort === 'price') {
+    //   sort.price = 1;
+    // }
 
-    const products = await ProductModel.find(query).sort(sort);
+    const products = await ProductModel.find()
     res.status(200).json(products);
   } catch (error) {
     console.error(error.message);

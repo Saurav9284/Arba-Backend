@@ -55,8 +55,9 @@ ProductController.get("/product", authorization,async (req, res) => {
 
 ProductController.post('/product',authorization,async (req, res) => {
   try {
-    const {title, description, price, category, image , owner} = req.body;
-    const product = await ProductModel.create({title, description, price, category, image, owner});
+    const { userId } = req;
+    const {title, description, price, category, image } = req.body;
+    const product = await ProductModel.create({title, description, price, category, image, owner:userId});
     res.status(200).json(product);
   } catch (error) {
     console.error(error.message);

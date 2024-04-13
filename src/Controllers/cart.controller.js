@@ -1,11 +1,11 @@
 const CartModel = require('../Models/cart.model');
 const express = require('express')
-
+const authorization = require('../Middlewares/authorization')
 const CartContoller = express.Router();
 
 // Create a new cart item
 
-CartContoller.post('/cart',async (req, res) => {
+CartContoller.post('/cart',authorization,async (req, res) => {
   try {
     const { productId } = req.body;
     const { userId } = req;
@@ -27,7 +27,7 @@ CartContoller.post('/cart',async (req, res) => {
 
 // Delete a cart item
 
-CartContoller.patch('/cart/delete/:id',async (req, res) => {
+CartContoller.patch('/cart/delete/:id',authorization,async (req, res) => {
   try {
     const { id } = req.params;
     const { quantity } = req.body;
@@ -50,7 +50,7 @@ CartContoller.patch('/cart/delete/:id',async (req, res) => {
 
 // Get all cart items
 
-CartContoller.get('/cart',async (req, res) => {
+CartContoller.get('/cart',authorization,async (req, res) => {
   try {
     const { userId } = req;
     

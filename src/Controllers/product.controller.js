@@ -4,31 +4,48 @@ const authorization = require('../Middlewares/authorization')
 const ProductController = express.Router()
 
 // Get all Products
-ProductController.get('/product', authorization, async (req, res) => {
+ProductController.get("/product", async (req, res) => {
   try {
-    // const userId = req.userId;
+    const page = parseInt(req.query.page) || 1;
+    const pageSize = parseInt(req.query.pageSize) || 12;
     
-    // if (!userId) {
-    //   return res.status(401).json({ msg: 'Unauthorized' });
-    // }
+    let query = {};
+
+    // Filtering 
+    if (req.query.category) {
+      query.category = req.query.category;
+    }
+
+    // Sorting 
+    const sortOptions = {};
+    if (req.query.sort) {
+      sortOptions[req.query.sort] = req.query.order === "desc" ? -1 : 1;
+    }
+
+    // Searching with name
+    if (req.query.title) {
+      // Use a regex for partial matching
+      query.title = { $regex: new RegExp(req.query.title, "i") };
+    }
+
+      query.createrId = req.userId;
     
-    // const query = { owner: userId };
+    const totalItems = await NoteModel.countDocuments(query);
+    const totalPages = Math.ceil(totalItems / pageSize);
 
-    // if (req.query.category) {
-    //   query.category = req.query.category;
-    // }
+    const data = await ProductModel.find(query)
+      .sort(sortOptions)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
 
-    // const sort = {};
-
-    // if (req.query.sort === 'price') {
-    //   sort.price = 1;
-    // }
-
-    const products = await ProductModel.find()
-    res.status(200).json(products);
+    res.json({
+      data,
+      page,
+      totalPages,
+      totalItems,
+    });
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send(error.message);
+    res.send({ message: "Internal server error" });
   }
 });
 

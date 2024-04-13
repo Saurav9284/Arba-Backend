@@ -1,10 +1,10 @@
 const ProductModel = require('../Models/product.model');
 const express = require('express')
-
+const authorization = require('../Middlewares/authorization')
 const ProductController = express.Router()
 
 // Get all Products
-ProductController.get('/product',async (req, res) => {
+ProductController.get('/product',authorization,async (req, res) => {
   try {
     let query = {};
 
@@ -34,11 +34,10 @@ ProductController.get('/product',async (req, res) => {
 
 // Create Product
 
-ProductController.post('/product',async (req, res) => {
+ProductController.post('/product',authorization,async (req, res) => {
   try {
-    const {title, description, price, category, image} = req.body;
-    const {userId} = req.userId;
-    const product = await ProductModel.create({title, description, price, category, image, owner:userId});
+    const {title, description, price, category, image , owner} = req.body;
+    const product = await ProductModel.create({title, description, price, category, image, owner});
     res.status(200).json(product);
   } catch (error) {
     console.error(error.message);
@@ -48,7 +47,7 @@ ProductController.post('/product',async (req, res) => {
 
 // Update Product
 
-ProductController.patch('/product/update/:id',async (req, res) => {
+ProductController.patch('/product/update/:id',authorization,async (req, res) => {
   try {
     const { id } = req.params;
     const updatedProduct = await ProductModel.findByIdAndUpdate(id, req.body, { new: true });
@@ -62,7 +61,7 @@ ProductController.patch('/product/update/:id',async (req, res) => {
 
 // Get Single Product
 
-ProductController.get('/product/:id',async (req, res) => {
+ProductController.get('/product/:id',authorization,async (req, res) => {
   try {
     const { id } = req.params;
     const product = await ProductModel.findById(id);
@@ -77,7 +76,7 @@ ProductController.get('/product/:id',async (req, res) => {
 });
 
 // Delete Product
-ProductController.delete('/product/delete/:id',async (req, res) => {
+ProductController.delete('/product/delete/:id',authorization,async (req, res) => {
   try {
     const { id } = req.params;
     await ProductModel.findByIdAndDelete(id);

@@ -30,7 +30,7 @@ ProductController.get("/product", async (req, res) => {
 
       query.createrId = req.userId;
     
-    const totalItems = await NoteModel.countDocuments(query);
+    const totalItems = await ProductModel.countDocuments(query);
     const totalPages = Math.ceil(totalItems / pageSize);
 
     const data = await ProductModel.find(query)

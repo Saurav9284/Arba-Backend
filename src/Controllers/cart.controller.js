@@ -15,10 +15,10 @@ CartContoller.post('/cart',async (req, res) => {
       if (cart) {
         cart.quantity++;
       } else {
-        cart = new Cart({ productId, quantity: 1, owner: userId });
+        cart = new CartModel({ productId, quantity: 1, owner: userId });
       }
   
-      const savedCartItem = await cart.save();
+      const savedCartItem = await CartModel.save();
       res.status(201).json(savedCartItem);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -54,7 +54,7 @@ CartContoller.get('/cart',async (req, res) => {
     try {
       const { userId } = req;
       
-      const cartItems = await Cart.find({ owner: userId });
+      const cartItems = await CartModel.find({ owner: userId });
       
       res.json(cartItems);
     } catch (error) {

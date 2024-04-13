@@ -102,6 +102,7 @@ UserController.post('/login',async (req, res) => {
 
 
 UserController.post('/update/password',async (req, res) => {
+  
   try {
     const {email} = req.body;
     let user = await UserModel.findOne({email});

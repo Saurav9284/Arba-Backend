@@ -101,7 +101,7 @@ UserController.post('/login',async (req, res) => {
 
 
 
-UserController.post('/email',async (req, res) => {
+UserController.get('/email',async (req, res) => {
   try {
     const {email} = req.body;
     let user = await UserModel.findOne({email});

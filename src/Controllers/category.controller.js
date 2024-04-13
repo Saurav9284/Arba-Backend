@@ -2,10 +2,11 @@ const express = require('express');
 const CategoryModel = require('../Models/category.model');
 const CategoryController = express.Router();
 const { default: mongoose } = require('mongoose');
+const authorization = require('../Middlewares/authorization')
 
 // Get all Categories
 
-CategoryController.get('/category',async (req, res) => {
+CategoryController.get('/category',authorization,async (req, res) => {
   try {
     if (!req.userId) {
       return res.status(401).json({ msg: 'Unauthorized' });
@@ -21,7 +22,7 @@ CategoryController.get('/category',async (req, res) => {
 
 // Create Category
 
-CategoryController.post('/category',async (req, res) => {
+CategoryController.post('/category',authorization, async (req, res) => {
     try {
       const { name, slug, image } = req.body;
       const { userId } = req;
@@ -41,7 +42,7 @@ CategoryController.post('/category',async (req, res) => {
 
 // Update Category
 
-CategoryController.patch('/category/update/:id',async (req, res) => {
+CategoryController.patch('/category/update/:id',authorization,async (req, res) => {
   try {
     const { id } = req.params;
     const updatedCategory = await CategoryModel.findByIdAndUpdate(id, req.body, { new: true });
@@ -55,7 +56,7 @@ CategoryController.patch('/category/update/:id',async (req, res) => {
 
 // Get Category by ID
 
-CategoryController.get('/category/:id',async (req, res) => {
+CategoryController.get('/category/:id',authorization,async (req, res) => {
   try {
     const { id } = req.params;
     const category = await CategoryModel.findById(id);
@@ -71,7 +72,7 @@ CategoryController.get('/category/:id',async (req, res) => {
 
 // Delete Category
 
-CategoryController.delete('/category/delete/:id',async (req, res) => {
+CategoryController.delete('/category/delete/:id',authorization,async (req, res) => {
   try {
     const { id } = req.params;
     await CategoryModel.findByIdAndDelete(id);

@@ -71,7 +71,7 @@ CategoryController.get('/category/:id',async (req, res) => {
 
 // Delete Category
 
-CategoryController.delete('/category',async (req, res) => {
+CategoryController.delete('/category/delete/:id',async (req, res) => {
   try {
     const { id } = req.params;
     await CategoryModel.findByIdAndDelete(id);

@@ -4,7 +4,7 @@ const authorization = require('../Middlewares/authorization')
 const ProductController = express.Router()
 
 // Get all Products
-ProductController.get("/product", async (req, res) => {
+ProductController.get("/product", authorization,async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 12;
@@ -28,7 +28,7 @@ ProductController.get("/product", async (req, res) => {
       query.title = { $regex: new RegExp(req.query.title, "i") };
     }
 
-      query.createrId = req.userId;
+      query.owner = req.userId;
     
     const totalItems = await ProductModel.countDocuments(query);
     const totalPages = Math.ceil(totalItems / pageSize);

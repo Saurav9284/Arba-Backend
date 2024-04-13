@@ -4,25 +4,26 @@ const authorization = require('../Middlewares/authorization')
 const ProductController = express.Router()
 
 // Get all Products
-ProductController.get('/product',authorization,async (req, res) => {
+ProductController.get('/product', authorization, async (req, res) => {
   try {
-    let query = {};
+    const userId = req.userId;
+    
+    if (!userId) {
+      return res.status(401).json({ msg: 'Unauthorized' });
+    }
+    
+    const query = { owner: userId };
 
     if (req.query.category) {
       query.category = req.query.category;
     }
 
-    let sort = {};
+    const sort = {};
 
     if (req.query.sort === 'price') {
       sort.price = 1;
     }
 
-    if (req.userId) {
-      query.owner = req.userId;
-    } else {
-      return res.status(401).json({ msg: 'Unauthorized' });
-    }
     const products = await ProductModel.find(query).sort(sort);
     res.status(200).json(products);
   } catch (error) {
@@ -30,6 +31,7 @@ ProductController.get('/product',authorization,async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+
 
 
 // Create Product
